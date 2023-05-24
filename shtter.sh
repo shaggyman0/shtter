@@ -70,9 +70,9 @@ GetRequestToken()
 URL="https://api.twitter.com/oauth/request_token"
 NONCE="`GenerateNonce`"
 TIMESTAMP="`GetTimeStamp`"
-PARAM="oauth_callback=&oauth_consumer_key=$CKEY&oauth_nonce=$NONCE&oauth_signature_method=HMAC-SHA1&oauth_timestamp=$TIMESTAMP&oauth_version=1.0"
+PARAM="oauth_callback=oob&oauth_consumer_key=$CKEY&oauth_nonce=$NONCE&oauth_signature_method=HMAC-SHA1&oauth_timestamp=$TIMESTAMP&oauth_version=1.0"
 HASH="`GenerateHash \"POST\" \"$URL\" \"$PARAM\"`"
-RTOKEN="`wget -q -O - --post-data=\"\" --header=\"Authorization: OAuth oauth_nonce=\"$NONCE\", oauth_callback=\"\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"$TIMESTAMP\", oauth_consumer_key=\"$CKEY\", oauth_signature=\"$HASH\", oauth_version=\"1.0\"\" $URL`"
+RTOKEN="`wget -q -O - --post-data=\"\" --header=\"Authorization: OAuth oauth_nonce=\"$NONCE\", oauth_callback=\"oob\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"$TIMESTAMP\", oauth_consumer_key=\"$CKEY\", oauth_signature=\"$HASH\", oauth_version=\"1.0\"\" $URL`"
 if [ "$RTOKEN" == "" ]; then
  echo "can not get request token" >&2
  exit 1
