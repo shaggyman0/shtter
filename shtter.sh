@@ -13,7 +13,7 @@ HTTP_POST="wget -q -O - --post-data"
 TMPDIR="/tmp"
  
 PREFIX=""
-SUFFIX=" http://bit.ly/13QU3ea #shtter"
+SUFFIX=" #shtter"
  
 GenerateNonce()
 {
@@ -82,7 +82,7 @@ RKEY="`echo \"$RTOKEN\" | sed 's/.*oauth_token=\([^&]*\).*/\1/'`"
 RSECRET="`echo \"$RTOKEN\" | sed 's/.*oauth_token_secret=\([^&]*\).*/\1/'`"
  
 echo "open this url in your browsser and input pin" >&2
-echo "http://twitter.com/oauth/authorize?oauth_token=$RKEY" >&2
+echo "https://twitter.com/oauth/authorize?oauth_token=$RKEY" >&2
 echo -n "pin > " >&2
 read PIN
  
@@ -95,7 +95,7 @@ RKEY="$1"
 RSECRET="$2"
 PIN="$3"
  
-URL="http://twitter.com/oauth/access_token"
+URL="https://twitter.com/oauth/access_token"
 PARAM="oauth_consumer_key=$CKEY&oauth_nonce=`GenerateNonce`&oauth_signature_method=HMAC-SHA1&oauth_timestamp=`GetTimeStamp`&oauth_token=$RKEY&oauth_verifier=$PIN&oauth_version=1.0"
 HASH="`GenerateHash \"GET\" \"$URL\" \"$PARAM\"`"
  
@@ -138,7 +138,7 @@ then
  exit 1
 fi
  
-URL="http://api.twitter.com/1.1/statuses/update.json"
+URL="https://api.twitter.com/1.1/statuses/update.json"
 PARAM="oauth_consumer_key=$CKEY&oauth_nonce=`GenerateNonce`&oauth_signature_method=HMAC-SHA1&oauth_timestamp=`GetTimeStamp`&oauth_token=$AKEY&oauth_version=1.0&status=$TWEET"
 HASH="`GenerateHash \"POST\" \"$URL\" \"$PARAM\"`"
  
