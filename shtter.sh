@@ -112,21 +112,22 @@ sed -i "1,/^AKEY/ s/^\(AKEY=\).*/\1\"$AKEY\"/" "$0"
 sed -i "1,/^ASECRET/ s/^\(ASECRET=\).*/\1\"$ASECRET\"/" "$0"
 }
  
-GetTimeLine()
+GetUsersMe()
 {
-URL="https://api.twitter.com/1.1/statuses/home_timeline.json"
-PARAM="oauth_consumer_key=$CKEY&oauth_nonce=`GenerateNonce`&oauth_signature_method=HMAC-SHA1&oauth_timestamp=`GetTimeStamp`&oauth_token=$AKEY&oauth_version=1.0&status="
+URL="https://api.twitter.com/2/users/me"
+NONCE="`GenerateNonce`"
+TIMESTAMP="`GetTimeStamp`"
+PARAM="oauth_consumer_key=$CKEY&oauth_nonce=$NONCE&oauth_signature_method=HMAC-SHA1&oauth_timestamp=$TIMESTAMP&oauth_token=$AKEY&oauth_version=1.0"
 HASH="`GenerateHash \"GET\" \"$URL\" \"$PARAM\"`"
  
-XML="`$HTTP_GET \"$URL?$PARAM&oauth_signature=$HASH\"`"
-if [ "$XML" == "" ]
+JSON="`wget -q -O - --header=\"Content-Type: application/json" --header=\"Authorization: OAuth oauth_nonce=\"$NONCE\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"$TIMESTAMP\", oauth_consumer_key=\"$CKEY\", oauth_token=\"$AKEY\", oauth_signature=\"$HASH\", oauth_version=\"1.0\"\" $URL`"
+if [ "$JSON" == "" ]
 then
  echo "can not get TimeLine" >&2
  exit 1
 fi
  
-XML="`echo $XML | sed 's/<text>/\n\0/g; s/<\/screen_name>/\0\n/g' | sed -n '/^<text>.*<\/screen_name>$/!d; s/<text>\([^<]*\).*<screen_name>\([^<]*\).*/\2: \1/; p'`"
-Decode "$XML"
+echo $JSON
 }
  
 UpdateTimeLine()
@@ -138,12 +139,14 @@ then
  exit 1
 fi
  
-URL="https://api.twitter.com/1.1/statuses/update.json"
-PARAM="oauth_consumer_key=$CKEY&oauth_nonce=`GenerateNonce`&oauth_signature_method=HMAC-SHA1&oauth_timestamp=`GetTimeStamp`&oauth_token=$AKEY&oauth_version=1.0&status=$TWEET"
+URL="https://api.twitter.com/2/tweets"
+NONCE="`GenerateNonce`"
+TIMESTAMP="`GetTimeStamp`"
+PARAM="oauth_consumer_key=$CKEY&oauth_nonce=$NONCE&oauth_signature_method=HMAC-SHA1&oauth_timestamp=$TIMESTAMP&oauth_token=$AKEY&oauth_version=1.0"
 HASH="`GenerateHash \"POST\" \"$URL\" \"$PARAM\"`"
  
-XML="`$HTTP_POST \"$PARAM&oauth_signature=$HASH\" \"$URL\"`"
-if [ "$XML" == "" ]
+JSON="`wget -q -O - --post-data=\"{ \\"text\\": \\"$TWEET\\" }\" --header=\"Content-Type: application/json" --header=\"Authorization: OAuth oauth_nonce=\"$NONCE\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"$TIMESTAMP\", oauth_consumer_key=\"$CKEY\", oauth_token=\"$AKEY\", oauth_signature=\"$HASH\", oauth_version=\"1.0\"\" $URL`"
+if [ "$JSON" == "" ]
 then
  echo "can not post tweet" >&2
  exit 1
@@ -167,7 +170,7 @@ else
    UpdateTimeLine "$@"
    ;;
   *)
-   GetTimeLine
+   GetUsersMe
    ;;
  esac
 fi
