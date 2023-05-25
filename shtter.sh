@@ -145,7 +145,7 @@ TIMESTAMP="`GetTimeStamp`"
 PARAM="oauth_consumer_key=$CKEY&oauth_nonce=$NONCE&oauth_signature_method=HMAC-SHA1&oauth_timestamp=$TIMESTAMP&oauth_token=$AKEY&oauth_version=1.0"
 HASH="`GenerateHash \"POST\" \"$URL\" \"$PARAM\"`"
  
-JSON="`wget -q -O - --post-data=\"{ \\"text\\": \\"$TWEET\\" }\" --header=\"Content-Type: application/json" --header=\"Authorization: OAuth oauth_nonce=\"$NONCE\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"$TIMESTAMP\", oauth_consumer_key=\"$CKEY\", oauth_token=\"$AKEY\", oauth_signature=\"$HASH\", oauth_version=\"1.0\"\" $URL`"
+JSON="`wget -q -O - --post-data=\"{ \\\"text\\\": \\\"$TWEET\\\" }\" --header=\"Content-Type: application/json" --header=\"Authorization: OAuth oauth_nonce=\"$NONCE\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"$TIMESTAMP\", oauth_consumer_key=\"$CKEY\", oauth_token=\"$AKEY\", oauth_signature=\"$HASH\", oauth_version=\"1.0\"\" $URL`"
 if [ "$JSON" == "" ]
 then
  echo "can not post tweet" >&2
