@@ -132,10 +132,10 @@ echo $JSON
  
 UpdateTimeLine()
 {
-TWEET="`Encode \"$PREFIX$@$SUFFIX\"`"
+TWEET="$PREFIX$@$SUFFIX"
 if [ "$TWEET" == "" ]
 then
- echo "can not decode tweet" >&2
+ echo "can not tweet" >&2
  exit 1
 fi
  
